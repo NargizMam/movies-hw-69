@@ -4,8 +4,9 @@ import axiosApi from "../axiosApi";
 export const  fetchMovies = createAsyncThunk<Movie[], string>(
     'movies/fetchAll',
     async (movieName) => {
-        const moviesResponse = await axiosApi.get(`?q=${movieName}`);
+        const moviesResponse = await axiosApi.get(`search/shows/?q=${movieName}`);
         const movies = moviesResponse.data;
+
         let newMovies: Movie[] = [];
         if (movies) {
             newMovies = Object.keys(movies).map(id => {

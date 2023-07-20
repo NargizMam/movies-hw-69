@@ -1,14 +1,20 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchMovies} from "./MoviesThunks";
+import {fetchMovies, fetchOneMovieInfo} from "./MoviesThunks";
 import {RootState} from "../app/store";
 
 interface MoviesState {
     allMovies: Movie[],
-    fetchLoading: boolean
+    oneMovieInfo: Movie | null,
+
+    fetchLoading: boolean;
+    fetchOneMovieLoading: boolean;
 }
 const initialState: MoviesState = {
     allMovies: [],
-    fetchLoading: false
+    oneMovieInfo: null,
+
+    fetchLoading: false,
+    fetchOneMovieLoading: false,
 }
 const moviesSlice = createSlice({
     name: 'movies',
@@ -25,9 +31,21 @@ const moviesSlice = createSlice({
         builder.addCase(fetchMovies.rejected, (state) => {
             state.fetchLoading = false;
         });
+        builder.addCase(fetchOneMovieInfo.pending, (state) => {
+            state.fetchOneMovieLoading = true;
+        });
+        builder.addCase(fetchOneMovieInfo.fulfilled, (state, action) => {
+            state.fetchOneMovieLoading = false;
+            state.oneMovieInfo = action.payload;
+        });
+        builder.addCase(fetchOneMovieInfo.rejected, (state) => {
+            state.fetchOneMovieLoading = false;
+        });
     }
 });
 
 export const moviesReducer = moviesSlice.reducer;
 export const selectFetchLoading = (state: RootState) => state.movies.fetchLoading;
 export const selectMovies = (state: RootState) => state.movies.allMovies;
+export const selectOneMovie = (state: RootState) => state.movies.oneMovieInfo;
+export const selectOneMovieLoading = (state: RootState) => state.movies.fetchOneMovieLoading;
